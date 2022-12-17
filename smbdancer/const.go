@@ -1,6 +1,6 @@
 // +build !windows
 
-package main
+package smbdancer
 
 const (
 	TERMINAL_CLEAR_LINE = "\r\x1b[2K"

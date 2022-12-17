@@ -1,4 +1,4 @@
-package main
+package smbdancer
 
 import (
 	"flag"
@@ -31,10 +31,7 @@ type Config struct {
 
 const (
 	BANNER = ` 
-  ___ ____  ___/ /__ ____  _______    
- / _ '/ _ \/ _  / _ '/ _ \/ __/ -_)   
- \_, /\___/\_,_/\_,_/_//_/\__/\__/    
-/___/
+ 
 `
 	SEP = "-----------------------------------------------------"
 )
@@ -77,17 +74,16 @@ func createConfig(cliconf *CLIConfig) (Config, error) {
 	return conf, nil
 }
 
-func main() {
+func SmbBrute(host string, port int, threadCnt int, userlist string, passlist string, domain string, debug bool, sleep string) {
 	var cliconf CLIConfig
-	flag.StringVar(&cliconf.host, "h", "", "Target host")
-	flag.IntVar(&cliconf.port, "p", 445, "Target port")
-	flag.IntVar(&cliconf.threads, "t", 10, "Number of threads")
-	flag.StringVar(&cliconf.userFile, "u", "", "User wordlist")
-	flag.StringVar(&cliconf.pwdFile, "w", "", "Password list")
-	flag.StringVar(&cliconf.domain, "d", "WORKGROUP", "Domain")
-	flag.BoolVar(&cliconf.debug, "v", false, "Debug")
-	flag.StringVar(&cliconf.sleep, "s", "", "Sleep time in seconds (per thread)")
-	flag.Parse()
+	cliconf.host = host
+	cliconf.port = port
+	cliconf.threads = threadCnt
+	cliconf.userFile = userlist
+	cliconf.pwdFile = passlist
+	cliconf.domain = domain
+	cliconf.debug = debug
+	cliconf.sleep = sleep
 	conf, err := createConfig(&cliconf)
 	if err != nil {
 		fmt.Printf("  [!] Error: %s\n\n", err)
