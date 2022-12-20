@@ -31,13 +31,14 @@ var (
 // SSH: userpasslist, iplist, threadcount, timeout
 //
 //	str           str     str          str
+
 func init() {
-	atckType = *flag.String("atk", "", "Attack type to use (ssh/smb)")
+	atckType = *flag.String("atk", "ssh", "Attack type to use (ssh/smb)")
 	threads = *flag.Int("t", 10, "Number of threads")
 	sleep = *flag.String("s", "", "Sleep time in seconds (per thread)")
 	// SSH Flags
-	usrpwdList = *flag.String("up", "", "Path to <User> <Pass> list")
-	ipList = *flag.String("l", "", "Path to IpList")
+	flag.StringVar(&usrpwdList, "up", "", "Path to <User> <Pass> list")
+	flag.StringVar(&ipList, "l", "", "Path to IpList")
 	// SMB Flags
 	smbhost = *flag.String("h", "", "Target host")
 	smbport = *flag.Int("p", 445, "Target port")
@@ -48,6 +49,9 @@ func init() {
 }
 func main() {
 	flag.Parse()
+	log.Println(atckType)
+	log.Println(usrpwdList)
+	log.Println(ipList)
 	if atckType == "ssh" {
 		bruteshed.SshBrute(usrpwdList, ipList, strconv.Itoa(threads), sleep)
 	} else if atckType == "smb" {

@@ -52,7 +52,7 @@ func runStrongArm() { //main() {
 		log.Fatalf("readLines: %s", err)
 	}
 	for _, line := range lines2 {
-		s := strings.Split(line, " ")
+		s := strings.Split(line, ":")
 		combo = append(combo, s)
 	}
 
@@ -62,10 +62,11 @@ func runStrongArm() { //main() {
 		if len(combo[i]) < 2 {
 			fmt.Printf("Mistyped line #%v ( %q )\n", i, lines2[i])
 		} else {
-			fmt.Printf("Attempting %v:%v on all target systems\n", combo[i][0], combo[i][1])
+			//fmt.Printf("Attempting %v:%v on all target systems\n", combo[i][0], combo[i][1])
 			for ix, _ := range ips {
 				time.Sleep(1 * time.Millisecond)
 				wg.Add(1)
+				fmt.Printf("Attempting %v:%v against: %s\n", combo[i][0], combo[i][1], ips[ix])
 				if runtime.NumGoroutine() < timeoutAsInt {
 					go tryHost(combo[i][0], ips[ix], combo[i][1], "uname -a", &wg)
 				} else {
